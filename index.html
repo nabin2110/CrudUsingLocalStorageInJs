@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+    
+    .container {
+        width: 50%;
+        margin: 50px 50px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+        margin: 20px;
+    }
+    
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    input[type="text"], input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    
+    input[type="submit"] {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div class="crudListItem">
+
+    </div>
+    <script>
+        const btnSubmit = document.querySelector('input[type="submit"]');
+        const name = document.querySelector('#name');
+        const email = document.querySelector('#email');
+        let savedItem = JSON.parse(localStorage.getItem('crudDataList'));
+        let myCrudList = [];
+        if(savedItem){
+            myCrudList = [...JSON.parse(localStorage.getItem('crudDataList'))];
+        }
+        const showAllData = document.querySelector('.crudListItem');
+
+        const deleteItem = (index)=>{
+            const item = myCrudList[index];
+            const itemKey = JSON.stringify(item);
+            localStorage.removeItem(itemKey);
+            myCrudList.splice(index, 1);
+           localStorage.setItem('crudDataList', JSON.stringify([...myCrudList]))
+            showData();
+        }
+        const showData = ()=>{
+            showAllData.innerHTML=''
+            myCrudList.map((value,index)=>{
+                showAllData.innerHTML += `<div><span>Name: ${value.name}</span>&nbsp;<span>Email: ${value.email}</span>&nbsp;&nbsp;&nbsp;<button id=${index} onClick="deleteItem(${index});">Delete</button></div>`;
+            })
+        }
+        btnSubmit.addEventListener('click',(e)=>{
+            e.preventDefault();
+            // console.log('test')
+            let nameValue = name.value.trim();
+            let emailValue = email.value.trim();
+            if(nameValue!="" && emailValue!==""){
+                let myObj = {name:nameValue,email:emailValue}
+                myCrudList.push(myObj);
+                localStorage.setItem('crudDataList',JSON.stringify(myCrudList));
+                name.value=email.value=''
+                showData();
+            }
+            })
+            showData();
+    </script>
+</body>
+</html>
